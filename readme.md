@@ -115,11 +115,9 @@ define('User/Login', function (require, module, exports) {
 
 从层级上可以看出，
 
-`User` 模块的直接子模块：`Login` 和 `List`。
-
-`Login`模块的直接子模块：`API`和`Loading`。
-
-`List`模块的直接子模块：`Scroller`和`Template`。
+- `User` 模块的直接子模块：`Login` 和 `List`。
+- `Login`模块的直接子模块：`API`和`Loading`。
+- `List`模块的直接子模块：`Scroller`和`Template`。
 
 从 JSON 的角度来看，它们更像：
 
