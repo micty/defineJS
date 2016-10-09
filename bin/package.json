@@ -1,0 +1,17 @@
+﻿{
+    "name": "defineJS",
+    "version": "0.1.0",
+    "description": "define JS modules as a tree.",
+    "repository": {},
+    "dependencies": {},
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "load-grunt-tasks": "", 
+        "grunt-contrib-concat": "",
+        "grunt-contrib-copy": ""
+    }, 
+
+    "engines": {
+        "node": ">=0.8.0"
+    }
+}
