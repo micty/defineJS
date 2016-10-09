@@ -62,7 +62,7 @@ JS 模块具有如下特征：
 - 模块的命名采用目录层级形式，如A/B/C，且在父模块所在的目录建立同名的目录名，直接子模块放入其内。
 - 当一个模块开始变得复杂时，可采用递归和分而治之的方式进一步划分成控制器和直接子模块
 
-> 一个中介者模块组就形成一个树干，当我们把一组中介者模式的模块组组合起来，就形成一棵完整的模块树，即树型结构的 CMD 模块系统。
+ ** 一个中介者模块组就形成一个树干，当我们把一组中介者模式的模块组组合起来，就形成一棵完整的模块树，即树型结构的 CMD 模块系统。 **
  
 
 #树型结构的 CMD 模块系统
@@ -105,13 +105,13 @@ define('User/Login', function (require, module, exports) {
 树形结构的模块系统
 我们使用具名的模块定义方式，即在定义模块时，`第一个参数`(字符串)即为模块的`名称`(`id`)。模块名称中，我们使用熟悉的`路径系统`的表示方式来表示出模块之间的父子关系，具体举例：
 
-`User`
-`User/Login`
-`User/Login/API`
-`User/Login/Loading`
-`User/List`
-`User/List/Scroller`
-`User/List/Template`
+- `User`
+- `User/Login`
+- `User/Login/API`
+- `User/Login/Loading`
+- `User/List`
+- `User/List/Scroller`
+- `User/List/Template`
 
 从层级上可以看出，
 `User` 模块的直接子模块：`Login` 和 `List`
