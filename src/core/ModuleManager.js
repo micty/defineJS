@@ -1,13 +1,17 @@
 
 /**
-* 模块管理器类
+* 模块管理器类。
 * @class
 */
 var ModuleManager = (function (Meta) {
 
+    /**
+    * 构造器。
+    */
     function ModuleManager(config) {
         config = config || {
             seperator: '/',
+            repeated: false,
         };
 
         var meta = {
@@ -18,6 +22,8 @@ var ModuleManager = (function (Meta) {
 
         Meta.set(this, meta);
     }
+
+
 
     //实例方法
     ModuleManager.prototype = /**@lends ModuleManager#*/ {
@@ -38,7 +44,6 @@ var ModuleManager = (function (Meta) {
                 throw new Error('配置设定了不允许定义重复的模块: 已存在名为 "' + id + '" 的模块');
             }
 
-
             id$module[id] = {
                 'factory': factory, //工厂函数或导出对象
                 'exports': null,    //这个值在 require 后可能会给改写
@@ -52,12 +57,12 @@ var ModuleManager = (function (Meta) {
         * 加载指定的模块。
         * @param {string} id 模块的名称。
         * @param {boolean} noCross 是否禁用跨级调用。 
-        *   当指定为 true 时，则禁用跨级调用。
+        *   当指定为 true 时，则禁用跨级调用。 否则，默认允许跨级调用。
         * @return 返回指定的模块的导出对象。
         */
         require: function (id, noCross) {
             if (typeof id != 'string') {
-                throw new Error('参数 id 的类型必须为 string');
+                throw new Error('参数 id 的类型必须为 string: ' + (typeof id));
             }
 
             var meta = Meta.get(this);
@@ -107,6 +112,9 @@ var ModuleManager = (function (Meta) {
 
                 //加载下级
                 'require': function (name) {
+                    if (name.indexOf(seperator) > -1) {
+                        throw new Error('不允许跨级加载: ' + name);
+                    }
                     name = id + seperator + name;
                     return self.require(name);
                 },
@@ -190,5 +198,5 @@ var ModuleManager = (function (Meta) {
 
 })(Meta);
 
-
-
+var mm = new ModuleManager();       //内部使用的模块管理器。
+var define = mm.define.bind(mm);    //提供快捷方式。

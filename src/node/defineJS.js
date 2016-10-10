@@ -1,56 +1,83 @@
 ﻿
+/**
+* 针对 node 端的导出对象。
+*/
+module.exports = (function (MM) {
 
-//给外界使用的模块管理器
-var mm = new ModuleManager({
-    seperator: '/',
-    repeated: false,
-});
+    //预定义一些 node 的内置模块。 这个要在最前面。
+    [
+       'fs',
+       'path',
+       'os',
+       'child_process',
+    ].forEach(function (name) {
+        define(name, function () {
+            return require(name);
+        });
+    });
 
-//提供快捷方式。
-//在 Node 中，全局对象是 global；其他环境是 this。
-global.define = mm.define.bind(mm);
+
+    var Config = MM.require('Config');
+    var DefineJS = MM.require('DefineJS');
+    var $Object = MM.require('Object');
+    var Directory = MM.require('Directory');
 
 
-module.exports = {
+    //记录已 require 过的文件。
+    var file$required = {};
+    var cwd = process.cwd().replace(/\\/g, '/') + '/';
 
-    require: function (dirs) {
 
+    //获取所有指定目录及子目录的所有 js 文件。
+    function getFiles(dirs) {
         if (!Array.isArray(dirs)) {
             dirs = [dirs];
         }
-
-        var cwd = process.cwd();
-        cwd = cwd.replace(/\\/g, '/') + '/';
 
         var files = [];
 
         dirs.forEach(function (dir) {
             dir = cwd + dir;
-
             var list = Directory.getFiles(dir);
             files = files.concat(list);
         });
 
         var path = require('path');
 
-        files.forEach(function (file) {
+        files = files.filter(function (file) {
             var ext = path.extname(file).toLowerCase();
-            if (ext != '.js') {
-                return;
-            }
-
-            require(file);
+            return ext == '.js';
         });
-    },
+
+        return files;
+    }
 
 
-    run: function (factory) {
-        var name = '';
-        mm.define(name, factory);
-        mm.require(name);
-    },
-};
+    return $Object.extend({}, DefineJS, {
 
+        'require': function (dirs) {
+            var files = getFiles(dirs);
+
+            files.forEach(function (file) {
+                if (file$required[file]) {
+                    return;
+                }
+                require(file);
+                file$required[file] = true;
+            });
+        },
+
+        'run': function (factory) {
+            DefineJS.run(function (require, mod) {
+                var config = Config.get();
+                module.exports.require(config.modules);
+                factory && factory(require, mod);
+            });
+        },
+
+    });
+    
+})(mm);
 
 
 

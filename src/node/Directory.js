@@ -2,8 +2,7 @@
 /**
 * 目录工具。
 */
-var Directory = (function () {
-
+define('Directory', function (require, module, exports) {
     var fs = require('fs');
 
     /**
@@ -40,5 +39,4 @@ var Directory = (function () {
     return {
         'getFiles': getFiles,
     };
-
-})();
+});

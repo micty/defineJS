@@ -20,10 +20,18 @@ module.exports = function (grunt) {
                 ]
             },
             {
+                dir: 'excore',
+                files: [
+                    'Config.js',
+                    'DefineJS.js',
+                    'Object.js',
+                ]
+            },
+            {
                 dir: 'node',
                 files: [
                     'Directory.js',
-                    'defineJS.js',
+                    'DefineJS.js',
                 ],
             },
             
