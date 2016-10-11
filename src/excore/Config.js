@@ -13,8 +13,8 @@ define('Config', function (require, module) {
             $Object.extend(defaults, data);
         },
 
-        'get': function () {
-            return $Object.extend({}, defaults);
+        'get': function (extraData) {
+            return $Object.extend({}, defaults, extraData);
         },
     };
 

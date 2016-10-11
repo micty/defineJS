@@ -4,7 +4,7 @@
 */
 module.exports = (function (MM) {
 
-    //预定义一些 node 的内置模块。 这个要在最前面。
+    //预定义一些 node 的内置模块，给内部使用。 这个要在最前面。
     [
        'fs',
        'path',
@@ -53,26 +53,41 @@ module.exports = (function (MM) {
     }
 
 
+    //加载指定目录下的所有 js 文件。
+    function load(dirs) {
+        var files = getFiles(dirs);
+
+        files.forEach(function (file) {
+            if (file$required[file]) {
+                return;
+            }
+            require(file);
+            file$required[file] = true;
+        });
+    }
+
+
     return $Object.extend({}, DefineJS, {
 
-        'require': function (dirs) {
-            var files = getFiles(dirs);
-
-            files.forEach(function (file) {
-                if (file$required[file]) {
-                    return;
-                }
-                require(file);
-                file$required[file] = true;
-            });
-        },
-
         'run': function (factory) {
-            DefineJS.run(function (require, mod) {
-                var config = Config.get();
-                module.exports.require(config.modules);
-                factory && factory(require, mod);
+
+            var defaults = MM.require('defaults');
+            var config = Config.get(defaults);
+
+
+            //给外界使用的模块管理器
+            var mm = new ModuleManager({
+                'seperator': config.seperator,
+                'repeated': config.repeated,
             });
+
+            //提供快捷方式，让外部可以直接调用全局方法 define()。
+            global[config.define] = mm.define.bind(mm);
+            load(config.modules);
+
+            var root = config.root;
+            mm.define(root, factory);
+            mm.require(root);
         },
 
     });

@@ -28,6 +28,17 @@ module.exports = function (grunt) {
                 ]
             },
             {
+                dir: 'defaults',
+                files: [
+                    {
+                        dir: 'node',
+                        files: [
+                            'defaults.js',
+                        ],
+                    },
+                ],
+            },
+            {
                 dir: 'node',
                 files: [
                     'Directory.js',

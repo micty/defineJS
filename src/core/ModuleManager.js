@@ -23,8 +23,6 @@ var ModuleManager = (function (Meta) {
         Meta.set(this, meta);
     }
 
-
-
     //实例方法
     ModuleManager.prototype = /**@lends ModuleManager#*/ {
         constructor: ModuleManager,
@@ -48,8 +46,8 @@ var ModuleManager = (function (Meta) {
                 'factory': factory, //工厂函数或导出对象
                 'exports': null,    //这个值在 require 后可能会给改写
                 'required': false,  //指示是否已经 require 过
-                'exposed': false,   //默认对外不可见
                 'count': 0,         // require 的次数统计
+                'data': {},         //额外的自定义数据。
             };
         },
 
@@ -74,7 +72,6 @@ var ModuleManager = (function (Meta) {
 
        
             var id$module = meta.id$module;
-            
             var module = id$module[id];
             if (!module) { //不存在该模块
                 return;
@@ -91,7 +88,6 @@ var ModuleManager = (function (Meta) {
             module.required = true; //更改标志，指示已经 require 过一次
             
             var factory = module.factory;
-
             if (typeof factory != 'function') { //非工厂函数，则直接导出
                 module.exports = factory;
                 return factory;
@@ -129,63 +125,35 @@ var ModuleManager = (function (Meta) {
             module.exports = exports;
             return exports;
         },
-        
+
         /**
-        * 设置或获取对外暴露的模块。
-        * 已重载 get(id)、set(id, exposed)、set({}) 三种方法。
-        * @param {string|Object} id 模块的名称。
-            当指定为一个 {} 时，则表示批量设置。
-            当指定为一个字符串时，则单个设置。
-        * @param {boolean} [exposed] 模块是否对外暴露。
-            当参数 id 为字符串时，且不指定该参数时，表示获取操作，
-            即获取指定 id 的模块是否对外暴露。
-        * @return {boolean}
+        * 给指定名称的模块设置或获取额外的自定义数据。
+        * @param {string} id 模块的名称。
+        * @param {object} [data] 要设置的自定义数据。
+        *   如果不指定，则为获取操作(get)。 否则为设置操作(set)。
+        * @return 返回合并后的全部自定义数据对象。
         */
-        expose: function (id, exposed) {
+        data: function (id, data) {
             var meta = Meta.get(this);
             var id$module = meta.id$module;
+            var all = id$module.data;
 
-            //内部方法: get 操作
-            function get(id) {
-                var module = id$module[id];
-                if (!module) {
-                    return;
-                }
-
-                return module.exposed;
+            if (!data) {
+                return all;
             }
 
-            //内部方法: set 操作
-            function set(id, exposed) {
-                var module = id$module[id];
-                if (module) {
-                    module.exposed = !!exposed;
-                }
+            if (typeof data != 'object') {
+                throw new Error('参数 data 非法: 如果要设置模块的自定义数据，请指定为一个 {} 对象。');
+            }
+            
+            //跟已有的合并
+            for (var key in data) {
+                all[key] = data[key];
             }
 
-            //set 操作
-            if (typeof id == 'object') { //重载 expose({...}); 批量 set
-                var id$exposed = id;
-                for (var id in id$exposed) {
-                    var exposed = id$exposed[id];
-                    set(id, exposed);
-                }
-
-                return;
-            }
-
-            var len = arguments.length;
-
-            if (len == 2) { //重载 expose('', true|false); 单个 set
-                set(id, exposed);
-                return;
-            }
-
-            if (len == 1) { //重载 expose(id);
-                return get(id); 
-            }
+            return all;
         },
-
+        
         /**
         * 销毁本实例。
         */
