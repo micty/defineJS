@@ -72,13 +72,23 @@ module.exports = function (grunt) {
             },
         });
 
-
-
-        //!!!!test
-        Tasks.run('copy', name, {
-            src: dest,
-            dest: 'E:/Kingdee/PanoramioPhoto/f/' + file,
+        Tasks.run('copy', 'package', {
+            src: '<%=dir.root%>package.json',
+            dest: home + '/package.json',
         });
+
+        Tasks.run('copy', 'readme', {
+            src: '<%=dir.root%>readme.md',
+            dest: home + '/readme.md',
+        });
+
+
+
+        ////!!!!test
+        //Tasks.run('copy', name, {
+        //    src: dest,
+        //    dest: 'E:/Kingdee/PanoramioPhoto/f/' + file,
+        //});
     });
 
 

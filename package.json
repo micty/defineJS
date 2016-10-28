@@ -1,0 +1,30 @@
+{
+  "name": "defineJS",
+  "version": "0.0.2",
+  "description": "define js modules as a tree.",
+  "main": "defineJS.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "define",
+    "module",
+    "manager"
+  ],
+  "author": {
+    "name": "mictydeng",
+    "email": "mictydeng@qq.com"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/micty/defineJS.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "load-grunt-tasks": "", 
+    "grunt-contrib-concat": "",
+    "grunt-contrib-copy": ""
+  }
+}
