@@ -29,7 +29,12 @@ module.exports = (function (MM) {
 
 
     //获取所有指定目录及子目录的所有 js 文件。
-    function getFiles(dirs) {
+    function getFiles(base, dirs) {
+
+        if (!base.endsWith('/')) {
+            base += '/';
+        }
+
         if (!Array.isArray(dirs)) {
             dirs = [dirs];
         }
@@ -37,7 +42,7 @@ module.exports = (function (MM) {
         var files = [];
 
         dirs.forEach(function (dir) {
-            dir = cwd + dir;
+            dir = base + dir;
             var list = Directory.getFiles(dir);
             files = files.concat(list);
         });
@@ -54,8 +59,8 @@ module.exports = (function (MM) {
 
 
     //加载指定目录下的所有 js 文件。
-    function load(dirs) {
-        var files = getFiles(dirs);
+    function load(base, dirs) {
+        var files = getFiles(base, dirs);
 
         files.forEach(function (file) {
             if (file$required[file]) {
@@ -83,7 +88,7 @@ module.exports = (function (MM) {
 
             //提供快捷方式，让外部可以直接调用全局方法 define()。
             global[config.define] = mm.define.bind(mm);
-            load(config.modules);
+            load(config.base, config.modules);
 
             var root = config.root;
             mm.define(root, factory);

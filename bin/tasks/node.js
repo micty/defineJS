@@ -62,14 +62,6 @@ module.exports = function (grunt) {
         Tasks.run('concat', name, {
             dest: dest,
             src: list,
-
-            options: {
-                banner: '\n' +
-                    '/*!\n' +
-                    '* <%=pkg.description%> for ' + name + '。\n' +
-                    '* version: <%=pkg.version%>\n' +
-                    '*/\n',
-            },
         });
 
         Tasks.run('copy', 'package', {
