@@ -2,27 +2,32 @@
 
 module.exports = function (grunt) {
 
+    grunt.file.defaultEncoding = 'utf8';
 
-    'use strict';
+    var pkg = grunt.file.readJSON('../src/package.json');
+    var dest = '../build/' + pkg.version;
 
-    var Tasks = require('./lib/Tasks');
-    var pkg = grunt.file.readJSON('package.json');
-
-    Tasks.setConfig({
-        'pkg': pkg,
-        'dir': {
-            root: '../',
-            src: '../src/',
-            build: '../build/',
+    grunt.initConfig({
+        copy: {
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '../src/',
+                        src: ['*/**', '*'],
+                        dest: dest,
+                    },
+                    {
+                        expand: true,
+                        cwd: '../',
+                        src: ['readme.md'],
+                        dest: dest,
+                    },
+                ],
+            },
         },
     });
 
-   
-
-    Tasks.load(grunt);
-    Tasks.register();
-
-
-    //运行 `grunt node` 即可构建针对 node 环境的库。
-    require('./tasks/node.js')(grunt);
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.registerTask('default', ['copy']);
 };

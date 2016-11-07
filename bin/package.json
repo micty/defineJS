@@ -1,8 +1,10 @@
+
 {
+    "version": "",
+    "dependencies": {},
+    
     "devDependencies": {
-        "grunt": "~0.4.1",
-        "load-grunt-tasks": "", 
-        "grunt-contrib-concat": "",
+        "grunt": "",
         "grunt-contrib-copy": ""
     }, 
 

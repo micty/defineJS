@@ -3,33 +3,33 @@
 * 元数据管理工具。
 * @namespace
 */
-var Meta = (function () {
-    var key = 'guid-' + Math.random().toString().slice(2, 6);
-    var guid$data = {};
 
-    return {
-        'set': function (obj, data) {
-            var guid = obj[key];
-            if (!guid) {
-                guid = obj[key] = Math.random().toString().slice(2);
-            }
+var key = 'guid-' + Math.random().toString().slice(2, 6);
+var guid$data = {};
 
-            guid$data[guid] = data;
-            return data;
-        },
+module.exports = {
+    'set': function (obj, data) {
+        var guid = obj[key];
+        if (!guid) {
+            guid = obj[key] = Math.random().toString().slice(2);
+        }
 
-        'get': function (obj) {
-            var guid = obj[key];
-            return guid ? guid$data[guid] : undefined;
-        },
+        guid$data[guid] = data;
+        return data;
+    },
 
-        'remove': function (obj) {
-            var guid = obj[key];
-            if (guid) {
-                delete obj[key];
-                delete guid$data[guid];
-            }
-        },
-    };
+    'get': function (obj) {
+        var guid = obj[key];
+        return guid ? guid$data[guid] : undefined;
+    },
 
-})();
+    'remove': function (obj) {
+        var guid = obj[key];
+        if (guid) {
+            delete obj[key];
+            delete guid$data[guid];
+        }
+    },
+};
+
+

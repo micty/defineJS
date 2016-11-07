@@ -1,9 +1,11 @@
 ﻿
+var fs = require('fs');
+
+
 /**
 * 目录工具。
 */
 define('Directory', function (require, module, exports) {
-    var fs = require('fs');
 
     /**
     * 递归的获取指定目录下及子目录下的所有文件列表。

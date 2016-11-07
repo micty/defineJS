@@ -1,57 +1,74 @@
 ﻿
+var fs = require('fs');
+var path = require('path');
+var minimatch = require('minimatch');
+
+
 /**
 * 路径模式工具
 */
 define('Patterns', function (require, module, exports) {
 
-    var fs = require('fs');
-    var minimatch = require('minimatch');
-    var $ = require('$');
-    var $String = require('String');
-
-   
     /**
     * 把一个目录和模式列表组合成一个新的模式列表。
     */
     function combine(dir, list) {
-
-        //重载 combine(list);
-        if (dir instanceof Array) {
-            return dir;
-        }
-
-        //重载 combine(item);
-        if (!list) {
-            return [dir];
-        }
 
         if (!Array.isArray(list)) {
             list = [list];
         }
 
 
-        var Path = require('Path');
-
-        list = $.Array.map(list, function (item, index) {
-
-            if (typeof item != 'string') {
-                return null;
-            }
-
-            if (item.indexOf('!') == 0) { //如 '!foo/bar/index.js'
-                item = '!' + Path.join(dir, item.slice(1));
+        list = list.map(function (item, index) {
+            if (item.startsWith('!')) { //如 '!foo/bar/index.js'
+                item = '!' + path.join(dir, item.slice(1));
             }
             else {
-                item = Path.join(dir, item);
+                item = path.join(dir, item);
             }
 
+            item = item.replace(/\\/g, '/');
             return item;
-
         });
       
         return list;
 
     }
+
+
+
+    function match(patterns, files) {
+
+        var includes = {};
+        var excludes = {};
+
+        patterns.forEach(function (pattern) {
+
+            var excluded = pattern.startsWith('!');
+            var obj = excluded ? excludes : includes;
+
+            if (excluded) {
+                pattern = pattern.slice(1);
+            }
+
+            files.forEach(function (file) {
+                var matched = minimatch(file, pattern);
+                if (matched) {
+                    obj[file] = true;
+                }
+            });
+        });
+
+        var matches = Object.keys(includes).filter(function (file) {
+            return !(file in excludes);
+        });
+
+        return matches;
+
+    }
+
+
+
 
     /**
     * 获取指定模式下的所有文件列表。
@@ -79,15 +96,17 @@ define('Patterns', function (require, module, exports) {
             //"!../htdocs/test.js"
             //"../htdocs/api/"
 
-            if (item.slice(-1) == '/') { //以 '/' 结束，是个目录
+            item = item.replace(/\\/g, '/');
+
+            if (item.endsWith('/')) { //以 '/' 结束，是个目录
                 item += '**/*';
                 patterns[index] = item; //这里回写进原数组。
             }
 
-            if (item.slice(0, 1) == '!') { // 以 '!' 开头的，如 '!../htdocs/test.js'
+            if (item.startsWith('!')) { // 以 '!' 开头的，如 '!../htdocs/test.js'
                 return;
             }
-            
+
 
             var index = item.indexOf('**/');
             if (index < 0) {
@@ -109,53 +128,18 @@ define('Patterns', function (require, module, exports) {
             var list = Directory.getFiles(dir);
             files = files.concat(list);
 
-
         });
 
 
         files = match(patterns, files);
-       
 
         return files;
 
     }
 
 
-    function match(patterns, files) {
-
-        var includes = {};
-        var excludes = {};
-
-        patterns.forEach(function (pattern) {
-
-            var excluded = pattern.slice(0, 1) == '!';
-            var obj = excluded ? excludes : includes;
-
-            if (excluded) {
-                pattern = pattern.slice(1);
-            }
-
-            files.forEach(function (file) {
-                var matched = minimatch(file, pattern);
-                if (matched) {
-                    obj[file] = true;
-                }
-            });
-        });
-
-        var matches = Object.keys(includes).filter(function (file) {
-            return !(file in excludes);
-        });
-
-        return matches;
-
-    }
-
-
-
     return {
-        getFiles: getFiles,
-        match: match,
+        'getFiles': getFiles,
     };
 
 });
