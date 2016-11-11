@@ -5,6 +5,8 @@
     
     "devDependencies": {
         "grunt": "",
+        "grunt-contrib-concat": "",
+        "grunt-contrib-uglify": "",
         "grunt-contrib-copy": ""
     }, 
 

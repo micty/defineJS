@@ -1,70 +1,46 @@
 ﻿
-
-function load(files) {
-    files.forEach(function (file) {
-        require(file);
-    });
-}
-
-
-var ModuleManager = require('./core/ModuleManager');
-var mm = new ModuleManager();               //内部使用的模块管理器。
-
-global['define'] = mm.define.bind(mm);      //提供快捷方式。
-
-
-load([
-    './excore/Object.js',
-    './fs/Directory.js',
-    './fs/Patterns.js',
-]);
-
-delete global['define'];
-
-
-
 //导出对象。
-module.exports = (function (require) {
-
-    var $Object = require('Object');
-    var Patterns = require('Patterns');
+(function (define, require) {
 
 
-    var defaults = {
-        define: 'define',
-        seperator: '/',
-        repeated: false,
-        root: '',
-    };
+    //给外部使用的模块管理器
+    var mm = new ModuleManager();
+
+    //提供快捷方式，让外部可以直接调用全局方法 define()。
+    global.define = mm.define.bind(mm);
 
 
-    return {
+    var container = {
 
-        'config': function (data) {
-            $Object.extend(defaults, data);
+        /**
+        * 版本号。 (由 grunt 自动插入)
+        */
+        'version': '{version}',
+
+        'create': function (config) {
+            return new ModuleManager(config);
         },
 
         'run': function (factory) {
-
-            //给外部使用的模块管理器
-            var mm = new ModuleManager({
-                'seperator': defaults.seperator,
-                'repeated': defaults.repeated,
-            });
-
-            //提供快捷方式，让外部可以直接调用全局方法 define()。
-            global[defaults.define] = mm.define.bind(mm);
-
-            var files = Patterns.getFiles(defaults.base, defaults.modules);
-            load(files);
-
-
-            var root = defaults.root;
+            var root = '';
             mm.define(root, factory);
             mm.require(root);
         },
+
     };
 
+    if (typeof define == 'function' && (define.amd || define.cmd)) { //amd|cmd
+        define(function (require) {
+            return container;
+        });
+    }
+    else { //browser 普通方式
+        global.defineJS = container;
+    }
 
 
-})(mm.require.bind(mm));
+    
+
+
+
+})(global.define, mm.require.bind(mm));

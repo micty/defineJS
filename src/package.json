@@ -1,7 +1,7 @@
 {
     "name": "defineJS",
-    "version": "0.2.2",
-    "description": "define js modules as a tree.",
+    "version": "0.1.0",
+    "description": "define js modules as a tree for browser",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
