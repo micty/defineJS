@@ -1,0 +1,26 @@
+{
+    "name": "defineJS",
+    "version": "0.3.0",
+    "description": "define js modules as a tree.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "define",
+        "module",
+        "manager"
+    ],
+    "author": {
+        "name": "mictydeng",
+        "email": "mictydeng@qq.com"
+    },
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/micty/defineJS.git"
+    },
+    "dependencies": {
+        "minimatch": ""
+    }
+}
