@@ -6,7 +6,66 @@ defineJS 框架
 ###简介 
 
 defineJS 是一个轻量级的 JavaScript 框架，可以用它来定义 CMD 模式的 JS 模块，多个 CMD 模块可以组成一棵模块树。
-处于树节点中的模块只能加载到它的直接子节点模块，而不能跨级调用，从而把 模块与模块之间复杂的网状结构变成树型结构，降低耦合度，提高模块的可维护性。
+处于树节点中的模块只能加载到它的直接子节点模块，而不能跨级调用，从而把模块与模块之间复杂的网状结构变成树型结构，降低耦合度，提高模块的可维护性。
+
+
+在目录 `modules` 增加一个模块：`User.js`
+
+```js
+define('User', function (require, module, exports) {
+
+	var Login = module.require('Login');
+    
+    
+    return {
+    	login: function () {
+        	Login.post();
+        },
+    };
+    
+
+});
+```
+
+在目录 `modules/User` 增加一个模块：`Login.js`
+
+```js
+define('User/Login', function (require, module, exports) {
+
+	return {
+    	post: function () {
+        	console.log(module.id, 'post called!');
+        },
+    };
+
+});
+```
+
+在根目录增加一个启动模块 `index.js`
+
+```js
+
+var $ = require('defineJS');
+
+$.config({
+    'base': __dirname,
+    'modules': [
+        'modules/',
+    ],
+});
+
+$.launch(function (require, module, exports) {
+    
+    var User = require('User');
+    User.login();
+
+});
+
+```
+
+
+
+
 
 > 在前端领域中，对 JS 模块的管理，有很多优秀的框架和库，比如 Seajs，就可以很方便的管理多个 JS 模块。
 

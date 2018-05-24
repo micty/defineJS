@@ -1,13 +1,11 @@
-
 {
     "version": "",
     "dependencies": {},
-    
     "devDependencies": {
         "grunt": "",
+        "grunt-contrib-clean": "",
         "grunt-contrib-copy": ""
-    }, 
-
+    },
     "engines": {
         "node": ">=0.8.0"
     }
